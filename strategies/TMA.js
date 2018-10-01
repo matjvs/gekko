@@ -29,6 +29,16 @@ method.check = function() {
   } else {
     this.advice();
   }
+
+  this.indicatorResult = {
+    trade: {
+      shortSMA:short,
+      mediumSMA:medium,
+      longSMA:long,
+    },
+    oscillator: {
+    },
+  };
 }
 
 module.exports = method;
