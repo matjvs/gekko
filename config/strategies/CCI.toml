@@ -5,6 +5,6 @@ constant = 0.015
 history = 90
 
 [thresholds]
-up = 150
-down = -30
+up = 100
+down = -100
 persistence = 0

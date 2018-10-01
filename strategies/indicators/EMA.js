@@ -1,6 +1,7 @@
-// @link http://en.wikipedia.org/wiki/Exponential_moving_average#Exponential_moving_average
+﻿// @link http://en.wikipedia.org/wiki/Exponential_moving_average#Exponential_moving_average
 
 var Indicator = function(weight) {
+  this.input = 'price';
   this.weight = weight;
   this.result = false;
   this.age = 0;

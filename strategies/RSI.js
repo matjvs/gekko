@@ -46,7 +46,7 @@ method.check = function() {
   var rsi = this.indicators.rsi;
   var rsiVal = rsi.result;
 
-  if(rsiVal > this.settings.high) {
+  if(rsiVal > this.settings.thresholds.high) {
 
     // new trend detected
     if(this.trend.direction !== 'high')
@@ -61,7 +61,7 @@ method.check = function() {
 
     log.debug('In high since', this.trend.duration, 'candle(s)');
 
-    if(this.trend.duration >= this.settings.persistence)
+    if(this.trend.duration >= this.settings.thresholds.persistence)
       this.trend.persisted = true;
 
     if(this.trend.persisted && !this.trend.adviced) {
@@ -70,7 +70,7 @@ method.check = function() {
     } else
       this.advice();
 
-  } else if(rsiVal < this.settings.low) {
+  } else if(rsiVal < this.settings.thresholds.low) {
 
     // new trend detected
     if(this.trend.direction !== 'low')
@@ -85,7 +85,7 @@ method.check = function() {
 
     log.debug('In low since', this.trend.duration, 'candle(s)');
 
-    if(this.trend.duration >= this.settings.persistence)
+    if(this.trend.duration >= this.settings.thresholds.persistence)
       this.trend.persisted = true;
 
     if(this.trend.persisted && !this.trend.adviced) {

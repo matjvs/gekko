@@ -5,9 +5,9 @@
 // see https://gekko.wizb.it/docs/installation/installing_gekko_on_a_server.html#Configuring-Gekko
 
 const CONFIG = {
-  headless: true,
+  headless: false,
   api: {
-    host: '0.0.0.0',
+    host: '127.0.0.1',
     port: 3000,
     timeout: 120000 // 2 minutes
   },
@@ -17,7 +17,7 @@ const CONFIG = {
     port: 3000,
     path: '/'
   },
-  adapter: 'postgresql'
+  adapter: 'sqlite'
 }
 
 if(typeof window === 'undefined')

@@ -2,18 +2,13 @@
 var _ = require('lodash');
 var log = require('../core/log.js');
 
-// configuration
-var config = require('../core/util.js').getConfig();
-var settings = config.CCI;
-var pposettings = config.PPO;
-
 // let's create our own method
 var method = {};
 
 // prepare everything our method needs
 method.init = function() {
   this.currentTrend;
-  this.requiredHistory = config.tradingAdvisor.historySize;
+  this.requiredHistory = this.tradingAdvisor.historySize;
 
   this.age = 0;
   this.trend = {
@@ -22,15 +17,15 @@ method.init = function() {
     persisted: false,
     adviced: false
   };
-  this.historySize = config.tradingAdvisor.historySize;
+  this.historySize = this.settings.history;
   this.ppoadv = 'none';
-  this.uplevel = settings.thresholds.up;
-  this.downlevel = settings.thresholds.down;
-  this.persisted = settings.thresholds.persistence;
+  this.uplevel = this.settings.thresholds.up;
+  this.downlevel = this.settings.thresholds.down;
+  this.persisted = this.settings.thresholds.persistence;
 
   // log.debug("CCI started with:\nup:\t", this.uplevel, "\ndown:\t", this.downlevel, "\npersistence:\t", this.persisted);
   // define the indicators we need
-  this.addIndicator('cci', 'CCI', settings);
+  this.addIndicator('cci', 'CCI', this.settings);
 }
 
 // what happens on every new candle?
@@ -39,31 +34,30 @@ method.update = function(candle) {
 
 // for debugging purposes: log the last calculated
 // EMAs and diff.
-method.log = function() {
+method.log = function(candle) {
     var cci = this.indicators.cci;
     if (typeof(cci.result) == 'boolean') {
         log.debug('Insufficient data available. Age: ', cci.size, ' of ', cci.maxSize);
-        log.debug('ind: ', cci.TP.result, ' ', cci.TP.age, ' ', cci.TP.depth);
         return;
     }
 
     log.debug('calculated CCI properties for candle:');
-    log.debug('\t', 'Price:\t\t\t', this.lastPrice);
+    log.debug('\t', 'Price:\t\t', candle.close.toFixed(8));
     log.debug('\t', 'CCI tp:\t', cci.tp.toFixed(8));
-    log.debug('\t', 'CCI tp/n:\t', cci.TP.result.toFixed(8));
+    log.debug('\t', 'CCI tp/n:\t', cci.avgtp.toFixed(8));
     log.debug('\t', 'CCI md:\t', cci.mean.toFixed(8));
     if (typeof(cci.result) == 'boolean' )
         log.debug('\t In sufficient data available.');
     else
-        log.debug('\t', 'CCI:\t', cci.result.toFixed(2));
+        log.debug('\t', 'CCI:\t\t', cci.result.toFixed(2));
 }
 
 /*
- * 
+ *
  */
-method.check = function() {
+method.check = function(candle) {
 
-  var price = this.lastPrice;
+    var lastPrice = candle.close;
 
     this.age++;
     var cci = this.indicators.cci;
@@ -82,7 +76,6 @@ method.check = function() {
             this.trend.adviced = false;
             if (this.persisted == 0) {
                 this.trend.adviced = true;
-                console.log(2);
                 this.advice('short');
             }
         } else if (cci.result >= this.uplevel) {
@@ -121,7 +114,7 @@ method.check = function() {
             }
             this.advice();
         }
-                
+
     } else {
         this.advice();
     }
